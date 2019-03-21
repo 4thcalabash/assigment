@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+<link rel="stylesheet" href="css/style_index.css"> <!-- Resource style -->
+
+<script src="js/modernizr.js"></script> <!-- Modernizr -->
+
+</head>
+<body>
+
+	<header class="cd-main-header">
+		<a class="cd-logo" href="#0"><img src="img/cd-logo.svg" width="120pt" alt="Logo"></a>
+
+		<ul class="cd-header-buttons">
+			<li><a class="cd-nav-trigger" href="#cd-primary-nav">Menu<span></span></a></li>
+		</ul> <!-- cd-header-buttons -->
+	</header>
+
+	<main class="cd-main-content">
+		<!-- your content here -->
+		<div id = "container">
+			Welcome
+		</div>
+		<div class="cd-overlay"></div>
+	</main>
+
+	<nav class="cd-nav">
+		<ul id="cd-primary-nav" class="cd-primary-nav is-fixed">
+			<li class="has-children">
+				<a href="#" >审批</a>
+				<ul class="cd-nav-icons is-hidden">
+					<li class="go-back"><a href="#0">Menu</a></li>
+					<li class="see-all"><a href="#" >Yummy!</a></li>
+					<li>
+						<a class="cd-nav-item item-1" href="#" >
+							<h3>审批餐厅修改申请</h3>
+							<p>在这里可以查看所有餐厅信息修改申请</p>
+						</a>
+					</li>
+
+					<li>
+						<a class="cd-nav-item item-1" href="#" >
+							<h3>查看历史审批</h3>
+							<p>在这里可以查看所有历史信息</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li class="has-children">
+				<a href="#" >结算</a>
+				<ul class="cd-nav-icons is-hidden">
+					<li class="go-back"><a href="#0">Menu</a></li>
+					<li class="see-all"><a href="#" >Yummy!</a></li>
+					<li>
+						<a class="cd-nav-item item-1" href="#" >
+							<h3>设置结算方式</h3>
+							<p>这里可以查看并修改结算方式</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li class="has-children">
+				<a href="#" >统计</a>
+				<ul class="cd-nav-icons is-hidden">
+					<li class="go-back"><a href="#0">Menu</a></li>
+					<li class="see-all"><a href="#" >Yummy!</a></li>
+					<li>
+						<a class="cd-nav-item item-1" href="#" >
+							<h3>餐厅统计</h3>
+							<p>在这里可以查看餐厅的统计信息</p>
+						</a>
+					</li>
+					<li>
+						<a class="cd-nav-item item-1" href="#" >
+							<h3>会员统计</h3>
+							<p>在这里可以查看会员的统计信息</p>
+						</a>
+					</li>
+					<li>
+						<a class="cd-nav-item item-1" href="#" >
+							<h3>Yummy!财务统计</h3>
+							<p>在这里可以查看Yummy的财务情况</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li class="has-children">
+				<a href="#" >设置</a>
+				<ul class="cd-nav-icons is-hidden">
+					<li class="go-back"><a href="#0">Menu</a></li>
+					<li class="see-all"><a href="#" >Yummy! </a></li>
+					<li>
+						<a class="cd-nav-item item-5" href="#" id = "logout">
+							<h3>登出</h3>
+							<p>退出本系统</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+		</ul> <!-- primary-nav -->
+	</nav> <!-- cd-nav -->
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.mobile.custom.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript">
+        $("#logout").click(function (event) {
+            console.log("logout");
+            $.ajax({
+                url:"/logout",
+                data:{},
+                success:function(data){
+                    if (data == "success"){
+                        $("#container").html("即将退出");
+                        setTimeout(function(){
+                            window.location.href = "home";
+						},350);
+                    }else{
+                        $("#container").html("系统出错，请重新登录");
+                    }
+                },
+                fail:function (data) {
+                    console.log(data);
+                }
+            })
+        })
+	</script>
+</body>
+</html>

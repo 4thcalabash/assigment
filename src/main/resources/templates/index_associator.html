@@ -1,0 +1,641 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+<link rel="stylesheet" href="css/style_index.css"> <!-- Resource style -->
+
+<script src="js/modernizr.js"></script> <!-- Modernizr -->
+	<script src="js/prototype.js" type="text/javascript"></script>
+	<script src="js/effects.js" type="text/javascript"></script>
+	<script type="text/javascript" src="js/validation.js"></script>
+
+</head>
+<body>
+
+	<header class="cd-main-header">
+		<a class="cd-logo" href="#0"><img src="img/cd-logo.svg" width="120pt" alt="Logo"></a>
+
+		<ul class="cd-header-buttons">
+			<li><a class="cd-nav-trigger" href="#cd-primary-nav">Menu<span></span></a></li>
+		</ul> <!-- cd-header-buttons -->
+	</header>
+
+	<main class="cd-main-content">
+		<!-- your content here -->
+		<div id = "welcome">
+			Welcome
+		</div>
+		<div id = "information" >
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<form id="test">
+					<fieldset>
+						<legend>账号信息</legend>
+						<div class="form-row">
+							<div class="field-label"><label for="field11">用户名</label>:</div>
+							<div class="field-widget"><input name="field11" id="field11" class="required" title="用户名不可修改" th:attr="value=${session.user.username}" readonly = "true"/></div>
+						</div>
+						<div class="form-row">
+							<div class="field-label"><label for="field14">邮箱</label>:</div>
+							<div class="field-widget"><input name="field14" id="field14" class="required" title="修改绑定邮箱" th:attr = "value = ${session.user.mail}" /></div>
+						</div>
+						<div class="form-row">
+							<div class="field-label"><label for="field15">注册时间</label>:</div>
+							<div class="field-widget"><input name="field15" id="field15" class="required" title="您的注册时间" th:attr = "value = ${session.user.register_time}" readonly = "true	"/></div>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>个人信息</legend>
+						<div class="form-row">
+							<div class="field-label"><label for="field21">姓名</label>:</div>
+							<div class="field-widget"><input name="field21" id="field21" class="required" title="修改姓名" th:attr = "value = ${session.user.name}" /></div>
+						</div>
+						<div class="form-row">
+							<div class="field-label"><label for="field22">手机号</label>:</div>
+							<div class="field-widget"><input name="field22" id="field22" class="required" title="修改手机号" th:attr = "value = ${session.user.phone}" /></div>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend >会员信息</legend>
+						<div class="form-row">
+							<div class="field-label"><label for="field31">会员等级</label>:</div>
+							<div class="field-widget">
+								<input name="field31" id="field31" class="required" title="您当前的会员等级" readonly = "true" th:attr = "value = ${session.user.vip_level}"/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="field-label"><label for="field32">会员编号</label>:</div>
+							<div class="field-widget"><input name="field32" id="field32" class="required" readonly = "true" title="您的会员编号"  th:attr = "value = ${session.user.id}"/></div>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend class="optional">安全</legend>
+						<div class="form-row">
+							<div class="field-label"><label for="field41">请输入密码</label>:</div>
+							<div class="field-widget">
+								<input name="field41" id="field41" class="optional" type = "password" title="请输入密码以提交修改" />
+							</div>
+						</div>
+					</fieldset>
+
+				</form>
+				<button id = "information_submit" >提交</button>
+				<button id = "information_back" >后退</button>
+			</div>
+		</div>
+		<div id = "address_all" style = "display: none">
+			<div class = "title">
+				送餐地址
+			</div>
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<form id = "addresses">
+
+				</form>
+			</div>
+		</div>
+		<div id = "address_adding" style = "display: none">
+			<div class = "title">
+				新增送餐地址
+			</div>
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<form >
+					<fieldset>
+						<legend>新地址</legend>
+						<div>
+							<div class="form-row">
+								<div class="field-label"><label >名字</label>:</div>
+								<div class="field-widget"><input class="required" title = "地址名字" id = "address_add_name" /></div>
+							</div>
+							<div class="form-row">
+								<div class="field-label"><label >具体地址</label>:</div>
+								<div class="field-widget"><input class="required" title = "具体地址信息" id = "address_add_content"/></div>
+							</div>
+						</div>
+					</fieldset>`
+				</form>
+				<button id = "address_submit" >提交</button>
+				<button id = "address_back" >后退</button>
+			</div>
+		</div>
+		<div id = "all_restaurants" style = "display:none">
+			<div class = "title">
+				附近的餐厅
+			</div>
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<form id = "restaurants">
+
+				</form>
+			</div>
+		</div>
+        <div id = "single_restaurant" style="display: none">
+            <div class = "title" id = "single_restaurant_title">
+                餐厅详情
+            </div>
+            <link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+            <div class="form_content">
+                <form id = "products">
+
+                </form>
+            </div>
+        </div>
+		<div id = "car" style="display: none;">
+			<div class = "title">
+				购物车详情
+			</div>
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<form id = "product_list">
+
+				</form>
+			</div>
+		</div>
+		<div class="cd-overlay"></div>
+	</main>
+
+	<nav class="cd-nav">
+		<ul id="cd-primary-nav" class="cd-primary-nav is-fixed">
+			<li class="has-children">
+				<a href="#" >点餐</a>
+				<ul class="cd-nav-icons is-hidden">
+					<li class="go-back"><a href="#0">Menu</a></li>
+					<li class="see-all"><a href="#" >Yummy!</a></li>
+					<li>
+						<a class="cd-nav-item item-1" href="#" id = "all_restaurant" >
+							<h3>查看附近餐厅</h3>
+							<p>这里可以显示您附近的所有餐厅</p>
+						</a>
+					</li>
+
+					<li>
+						<a class="cd-nav-item item-1" href="#" >
+							<h3>五星推荐</h3>
+							<p>为您定制的餐厅推荐</p>
+						</a>
+					</li>
+
+					<li>
+						<a class="cd-nav-item item-1" href="#" id="look_up_car" >
+							<h3>查看购物车</h3>
+							<p>查看您购物车中的餐品</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+			<li class="has-children">
+				<a href="#" >订单</a>
+				<ul class="cd-nav-icons is-hidden">
+					<li class="go-back"><a href="#0">Menu</a></li>
+					<li class="see-all"><a href="#" >Yummy!</a></li>
+					<li>
+						<a class="cd-nav-item item-1" href="#" >
+							<h3>查看历史订单</h3>
+							<p>在这里可以查看您的所有订单</p>
+						</a>
+					</li>
+
+					<li>
+						<a class="cd-nav-item item-1" href="#" >
+							<h3>进行中订单</h3>
+							<p>查看当前进行中的订单</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li class="has-children">
+				<a href="#" >送餐地址</a>
+				<ul class="cd-nav-icons is-hidden">
+					<li class="go-back"><a href="#0">Menu</a></li>
+					<li class="see-all"><a href="#" >Yummy!</a></li>
+					<li>
+						<a class="cd-nav-item item-1" href="#" id = "address_show" >
+							<h3>管理送餐地址</h3>
+							<p>在这里可以查看您的所有送餐地址</p>
+						</a>
+					</li>
+
+					<li>
+						<a class="cd-nav-item item-1" href="#" id = "address_add">
+							<h3>新增送餐地址</h3>
+							<p>点击新增一个送餐地址</p>
+						</a>
+					</li>
+
+
+				</ul>
+			</li>
+
+			<li class="has-children">
+				<a href="#" >设置</a>
+				<ul class="cd-nav-icons is-hidden">
+					<li class="go-back"><a href="#0">Menu</a></li>
+					<li class="see-all"><a href="#" >Yummy! </a></li>
+					<li>
+						<a class="cd-nav-item item-5" href="#" id = "info" >
+							<h3>查看会员信息</h3>
+							<p>在这里可以查看并修改您的姓名、手机号等信息</p>
+						</a>
+					</li>·
+					<li>
+						<a class="cd-nav-item item-5" href="#" id = "logout">
+
+							<h3>登出</h3>
+							<p>退出本系统</p>
+						</a>
+					</li>
+
+					<li>
+						<a class="cd-nav-item item-6" href="#" id = "dispose" >
+							<h3>注销账号</h3>
+							<p style="color:red;">此操作将删除本账号信息</p>
+						</a>
+					</li>
+
+				</ul>
+			</li>
+
+		</ul> <!-- primary-nav -->
+	</nav> <!-- cd-nav -->
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.mobile.custom.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+
+	<script type="text/javascript">
+		function make_address(name,address_content,id){
+			return `<fieldset>
+						<legend>` + name + `</legend>
+						<div>
+							<div class=\"form-row\">
+								<div class=\"field-label\"><label >具体地址</label>:</div>
+								<div class=\"field-widget\"><input class=\"required\"  value = \"`+address_content +`\" id = \"address_update_content_`+id+`\"/></div>
+								<button id=\"address_update_`+id+`\" style = \"margin-right = 10px\">修改</button>
+								<button id=\"address_delete_`+id+`\">删除</button>
+							</div>
+						</div>
+					</fieldset>`;
+		}
+		function make_restaurant(r){
+            return `<fieldset >
+						<legend>` + r.name +`\\`+r.type+ `</legend>
+						<div>
+							<div class=\"form-row\">
+								<div class=\"field-label\"><label >地址</label>:</div>
+								<div class=\"field-widget\"><input class=\"required\"  value = \"`+r.address +`\" readonly = true/></div>
+                                <button id=\"restaurant_single_`+r.id+`\">进店</button>
+							</div>
+						</div>
+					</fieldset>`;
+		}
+		function make_product(p){
+            return `<fieldset >
+						<legend>` +p.name+ `</legend>
+						<div>
+							<div class=\"form-row\">
+								<div class=\"field-label\"><label >单价</label>:</div>
+								<div class=\"field-widget\"><input class=\"required\"  value = \"`+p.price+`\" readonly = true/></div>
+                                <br>
+                                <div class=\"field-label\"><label >剩余个数</label>:</div>
+                                <div class=\"field-widget\"><input class=\"required\"  value = \"`+p.number+`\" readonly = true/></div>
+                                <br>
+                                <button id = \"product_buy_`+p.id+`\">加入购物车</button>
+							</div>
+						</div>
+					</fieldset>`;
+        }
+		function refresh_address(){
+		    var associator_id = [[${session.user.id}]];
+            $.ajax({
+                url:"/associator/address/get",
+                data:{
+                   associator_id:associator_id
+                },
+                success:function(data){
+                    //console.log(data);
+					var html_string = "";
+					for (var i = 0;i < data.length;i++){
+					    html_string += make_address(data[i].name,data[i].address_content,data[i].id);
+					}
+					$("#addresses").html(html_string);
+					for (var i = 0;i < data.length;i ++){
+                            var id = data[i].id;
+                            //console.log("#address_delete_"+id);
+                            $("#address_delete_"+id).click(function(event){
+                                $.ajax({
+                                    url:"/associator/address/delete",
+                                    data:{
+                                        id:id
+                                    },
+                                    success:function(data){
+                                        console.log(data);
+                                        if (data == "success"){
+                                            $("#welcome").html("成功删除送餐地址");
+                                            only_show("welcome");
+                                        }else{
+                                            $("#welcome").html("系统错误，请重试");
+                                            only_show("welcome");
+                                        }
+                                    },
+                                    fail:function (data) {
+                                        console.log(data);
+                                    }
+                                })
+                            });
+                            $("#address_update_"+id).click(function(event){
+                                var address_content = $("#address_update_content_"+ id).val();
+                                $.ajax({
+                                    url:"/associator/address/update",
+                                    data:{
+                                        id:id,
+                                        address_content:address_content
+                                    },
+                                    success:function(data){
+                                        console.log(data);
+                                        if (data == "success"){
+                                            $("#welcome").html("成功修改送餐地址");
+                                            only_show("welcome");
+                                        }else{
+                                            $("#welcome").html("系统错误，请重试");
+                                            only_show("welcome");
+                                        }
+                                    },
+                                    fail:function (data) {
+                                        console.log(data);
+                                    }
+                                })
+                            })
+                        }
+
+
+                },
+                fail:function (data) {
+                    console.log(data);
+                }
+            })
+		}
+		function add_product(p){
+		    console.log(p);
+		    console.log(window.car);
+            for (var i = 0;i < window.car.product_list.length;i++){
+		        if (window.car.product_list[i].id == p){
+		            window.car.product_list[i].cnt ++;
+		            return;
+				}
+			}
+			window.car.product_list.push({id:p,cnt:1});
+		}
+		function refresh_single_restaurant(r){
+		    $("#single_restaurant_title").html(r.name);
+			console.log(window.car);
+		    $.ajax({
+                url:"/product/all",
+                data:{
+                    restaurant_id : r.id
+                },
+                success(data){
+                    window.restaurant_data = data;
+                    var html_str = "";
+                    for (var i = 0;i < data.length;i++){
+                        html_str += make_product(data[i]);
+                    }
+                     $("#products").html(html_str);
+                    for (var i = 0;i <data.length;i++){
+                        var id = data[i].id;
+                        $("#product_buy_"+id).click(function(event){
+							add_product(id);
+						});
+					}
+                },
+                fail(data){
+                    console.log(data);
+                }
+            });
+        }
+		function refresh_restaurants(){
+            $.ajax({
+                url:"/restaurant/all",
+                data:{},
+                success:function(data){
+                    console.log(data);
+                    var html_string = "";
+                    for (var i = 0;i < data.length;i++){
+                        html_string += make_restaurant(data[i]);
+                    }
+                     $("#restaurants").html(html_string);
+                    for (var i = 0;i < data.length;i ++){
+                        var id = data[i].id;
+                        $("#restaurant_single_"+id).click(function(event){
+                            console.log("#restaurant_single_"+id);
+                            $.ajax({
+                                url:"/restaurant/one",
+                                data:{
+                                    id:id
+                                },
+                                success:function(data){
+                                    console.log(data);
+                                    window.car={};
+                                    window.car.restaurant_id = id;
+                                    window.car.product_list = new Array();
+                                    refresh_single_restaurant(data);
+
+                                    only_show("single_restaurant");
+                                },
+                                fail:function (data) {
+                                    console.log(data);
+                                }
+                            })
+                        });
+                    }
+                },
+                fail:function (data) {
+                    console.log(data);
+                }
+            })
+		}
+		function refresh_product_list(){
+		    var strs = new Array(window.car.product_list.length);
+		    for (var i = 0;i < window.car.product_list.length;i++){
+		        var data = window.car.product_list[i];
+		        var II = i;
+                console.log(data);
+                $.ajax({
+                    url:"/product/get_one",
+                    data:{
+                        product_id : data.id
+                    },
+                    success(data_){
+                        console.log(data_);
+                        strs[II] = `<fieldset >
+						<legend>` +data_.name+ `</legend>
+						<div>
+							<div class=\"form-row\">
+								<div class=\"field-label\"><label >单价</label>:</div>
+								<div class=\"field-widget\"><input class=\"required\"  value = \"`+data_.price+`\" readonly = true/></div>
+                                <br>
+                                <div class=\"field-label\"><label >购买个数</label>:</div>
+                                <div class=\"field-widget\"><input class=\"required\"  value = \"`+data.cnt+`\" readonly = true/></div>
+                                <br>
+                                <button id = \"product_delete_`+data.id+`\">删除</button>
+							</div>
+						</div>
+					</fieldset>`;
+                    },
+                    fail(data_){
+                        console.log(data_);
+                    }
+                })
+			}
+			setTimeout(function () {
+				//console.log(strs);
+                var html_str = "";
+                for (var i = 0;i < strs.length;i++){
+                    html_str += strs[i];
+                }
+                //console.log(html_str);
+                $("#product_list").html(html_str);
+            },1000);
+
+		}
+		function only_show(id){
+		    var list = ["information","welcome","address_all","address_adding","all_restaurants","single_restaurant","car"];
+		    for (var i = 0;i<list.length;i ++){
+				var temp_id = list[i];
+				if (id == temp_id){
+				    document.getElementById(id).style.display = "block";
+				}else{
+				    document.getElementById(temp_id).style.display = "none";
+				}
+			}
+		}
+		$("#look_up_car").click(function(event){
+		    refresh_product_list();
+		   only_show("car");
+		});
+		$("#all_restaurant").click(function(event){
+		    refresh_restaurants();
+			only_show("all_restaurants");
+		})
+		$("#address_submit").click(function(event){
+		    var name = $("#address_add_name").val();
+		    var address_content = $("#address_add_content").val();
+            $.ajax({
+                url:"/associator/address/add",
+                data:{
+                    name : name,
+					address_content:address_content
+                },
+                success:function(data){
+                    console.log(data);
+                    if (data == "success"){
+                        $("#welcome").html("成功新增送餐地址");
+                        only_show("welcome");
+                    }else{
+                        $("#welcome").html("系统错误，请重试");
+                        only_show("welcome");
+                    }
+                },
+                fail:function (data) {
+                    console.log(data);
+                }
+            })
+		})
+		$("#address_back").click(function (event) {
+            $("#welcome").html("welcome");
+            only_show("welcome");
+        })
+		$("#address_add").click(function(event){
+		    only_show("address_adding");
+		})
+		$("#address_show").click(function(event){
+		   refresh_address();
+		   only_show("address_all");
+		});
+		$("#information_submit").click(function (event) {
+			var mail = $("#field14").val();
+			var name = $("#field21").val();
+			var phone = $("#field22").val();
+			var password = $("#field41").val();
+			var username = "[[${session.user.username}]]";
+            $.ajax({
+                url:"/associator/update",
+                data:{
+                    mail:mail,
+					phone:phone,
+					name:name,
+					username:username,
+					password:password
+				},
+                success:function(data){
+                    console.log(data);
+                    if (data == "success"){
+                        $("#welcome").html("信息修改成功");
+                        only_show("welcome");
+                    }else{
+                        $("#welcome").html("密码错误，请重新修改");
+                        only_show("welcome");
+                    }
+                },
+                fail:function (data) {
+                    console.log(data);
+                }
+            })
+
+        })
+		$("#dispose").click(function (even) {
+			var flag = confirm("此操作不可撤销，是否继续？");
+        	if (!flag)return;
+        	flag = confirm("重要的事情说三遍，是否继续？")
+			if (!flag)return;
+        	flag = confirm("是否继续？（最后一遍）");
+        	if (!flag)return;
+            $.ajax({
+                url:"/associator/dispose",
+                data:{
+                    username :"[[${session.user.username}]]",
+					id : "[[${session.user.id}]]"
+				},
+                success:function(data){
+                    if (data == "success")
+                    window.location.href = "home";
+                },
+                fail:function (data) {
+                    console.log(data);
+                }
+            })
+		})
+		$("#information_back").click(function (event) {
+		    $("#welcome").html("welcome");
+			only_show("welcome");
+        })
+		$("#info").click(function(event){
+		    only_show("information");
+		});
+        $("#logout").click(function (event) {
+            console.log("logout");
+            $.ajax({
+                url:"/logout",
+                data:{},
+                success:function(data){
+                    if (data == "success"){
+                        $("#container").html("即将退出");
+                        setTimeout(function(){
+                            window.location.href = "home";
+						},350);
+                    }else{
+                        $("#container").html("系统出错，请重新登录");
+                    }
+                },
+                fail:function (data) {
+                    console.log(data);
+                }
+            })
+        })
+	</script>
+</body>
+</html>
