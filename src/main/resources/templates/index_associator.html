@@ -145,7 +145,7 @@
             </div>
         </div>
 		<div id = "car" style="display: none;">
-			<div class = "title">
+			<div class = "title" id = "shop_car_title">
 				购物车详情
 			</div>
 			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
@@ -153,6 +153,7 @@
 				<form id = "product_list">
 
 				</form>
+				<button id="make_deal">下单</button>
 			</div>
 		</div>
 		<div class="cd-overlay"></div>
@@ -268,6 +269,17 @@
 <script type="text/javascript" src="js/main.js"></script>
 
 	<script type="text/javascript">
+		function only_show(id){
+			var list = ["information","welcome","address_all","address_adding","all_restaurants","single_restaurant","car"];
+			for (var i = 0;i<list.length;i ++){
+				var temp_id = list[i];
+				if (id == temp_id){
+					document.getElementById(id).style.display = "block";
+				}else{
+					document.getElementById(temp_id).style.display = "none";
+				}
+			}
+		}
 		function make_address(name,address_content,id){
 			return `<fieldset>
 						<legend>` + name + `</legend>
@@ -380,19 +392,23 @@
             })
 		}
 		function add_product(p){
-		    console.log(p);
-		    console.log(window.car);
-            for (var i = 0;i < window.car.product_list.length;i++){
-		        if (window.car.product_list[i].id == p){
-		            window.car.product_list[i].cnt ++;
-		            return;
+			console.log(p);
+			$.ajax({
+				url:"/shop_car/add_item",
+				data:{
+					item_id:p,
+					number:1
 				}
-			}
-			window.car.product_list.push({id:p,cnt:1});
+			});
 		}
 		function refresh_single_restaurant(r){
 		    $("#single_restaurant_title").html(r.name);
-			console.log(window.car);
+			$.ajax({
+				url:"/shop_car/change_shop",
+				data:{
+					shop_id:r.id
+				}
+			});
 		    $.ajax({
                 url:"/product/all",
                 data:{
@@ -439,11 +455,7 @@
                                 },
                                 success:function(data){
                                     console.log(data);
-                                    window.car={};
-                                    window.car.restaurant_id = id;
-                                    window.car.product_list = new Array();
                                     refresh_single_restaurant(data);
-
                                     only_show("single_restaurant");
                                 },
                                 fail:function (data) {
@@ -458,61 +470,55 @@
                 }
             })
 		}
+		function make_shop_item(data_){
+			return `<fieldset >
+								<legend>` +data_.name+ `</legend>
+								<div>
+									<div class=\"form-row\">
+										<div class=\"field-label\"><label >单价</label>:</div>
+										<div class=\"field-widget\"><input class=\"required\"  value = \"`+data_.price+`\" readonly = true/></div>
+					                    <br>
+					                    <div class=\"field-label\"><label >购买个数</label>:</div>
+					                    <div class=\"field-widget\"><input class=\"required\"  value = \"`+data_.number+`\" readonly = true/></div>
+					                    <br>
+					                    <button id = \"product_delete_`+data_.id+`\">删除</button>
+									</div>
+								</div>
+							</fieldset>`;
+		}
 		function refresh_product_list(){
-		    var strs = new Array(window.car.product_list.length);
-		    for (var i = 0;i < window.car.product_list.length;i++){
-		        var data = window.car.product_list[i];
-		        var II = i;
-                console.log(data);
-                $.ajax({
-                    url:"/product/get_one",
-                    data:{
-                        product_id : data.id
-                    },
-                    success(data_){
-                        console.log(data_);
-                        strs[II] = `<fieldset >
-						<legend>` +data_.name+ `</legend>
-						<div>
-							<div class=\"form-row\">
-								<div class=\"field-label\"><label >单价</label>:</div>
-								<div class=\"field-widget\"><input class=\"required\"  value = \"`+data_.price+`\" readonly = true/></div>
-                                <br>
-                                <div class=\"field-label\"><label >购买个数</label>:</div>
-                                <div class=\"field-widget\"><input class=\"required\"  value = \"`+data.cnt+`\" readonly = true/></div>
-                                <br>
-                                <button id = \"product_delete_`+data.id+`\">删除</button>
-							</div>
-						</div>
-					</fieldset>`;
-                    },
-                    fail(data_){
-                        console.log(data_);
-                    }
-                })
-			}
-			setTimeout(function () {
-				//console.log(strs);
-                var html_str = "";
-                for (var i = 0;i < strs.length;i++){
-                    html_str += strs[i];
-                }
-                //console.log(html_str);
-                $("#product_list").html(html_str);
-            },1000);
-
-		}
-		function only_show(id){
-		    var list = ["information","welcome","address_all","address_adding","all_restaurants","single_restaurant","car"];
-		    for (var i = 0;i<list.length;i ++){
-				var temp_id = list[i];
-				if (id == temp_id){
-				    document.getElementById(id).style.display = "block";
-				}else{
-				    document.getElementById(temp_id).style.display = "none";
+			$("#shop_car_title").html("购物车");
+		    $.ajax({
+				url:"/shop_car/shop_list",
+				success(shop_list){
+					console.log(shop_list);
+					var html_str = "";
+					for (var i = 0;i < shop_list.length;i++){
+					    var data = shop_list[i];
+					    html_str += make_shop_item(data);
+					}
+					$("#product_list").html(html_str);
+					for (var i = 0;i < shop_list.length;i++){
+						var id = shop_list[i].id;
+						var number = shop_list[i].number;
+						$("#product_delete_"+id).click(function (event) {
+							$.ajax({
+								url:"/shop_car/delete_item",
+								data:{
+									item_id:id,
+									number:number
+								},
+								success(data){
+									console.log("here");
+									refresh_product_list();
+								}
+							})
+						})
+					}
 				}
-			}
+			})
 		}
+
 		$("#look_up_car").click(function(event){
 		    refresh_product_list();
 		   only_show("car");
@@ -520,6 +526,9 @@
 		$("#all_restaurant").click(function(event){
 		    refresh_restaurants();
 			only_show("all_restaurants");
+		})
+		$("#make_deal").click(function (event) {
+
 		})
 		$("#address_submit").click(function(event){
 		    var name = $("#address_add_name").val();
