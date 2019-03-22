@@ -33,6 +33,7 @@ public class ShopCarController {
     void add_item(@RequestParam("item_id")Integer id,
                   @RequestParam("number")Integer number,
                   HttpServletRequest request){
+        System.out.println(id+"   "+number);
         HttpSession session = request.getSession();
         HashMap<Integer,Integer> mp = (HashMap)session.getAttribute("shop_list");
         int now_number = 0;

@@ -14,14 +14,15 @@ public class OrderItem {
     private int productId;
     private int number;
     private double amount;
-    public OrderItem_VO get(){
-        OrderItem_VO vo = new OrderItem_VO();
-        vo.setId(id);
-        vo.setAmount(amount);
-        vo.setNumber(number);
-        vo.setOrder_id(orderId);
-        vo.setProduct_id(productId);
-        return vo;
+    @Transient
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getId() {

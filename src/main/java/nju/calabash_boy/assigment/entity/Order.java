@@ -1,13 +1,15 @@
 package nju.calabash_boy.assigment.entity;
 
-import org.apache.tomcat.jni.Local;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "order")
+@Table(name = "`order`")
+/*
+confirming delivering finished
+ */
 public class Order {
     @Id
     @GeneratedValue
@@ -26,20 +28,27 @@ public class Order {
     @Column(name = "finish_time")
     private LocalDateTime finishTime;
     private double amount;
-    public Order_VO get(List<OrderItem_VO> item_list){
-        Order_VO vo = new Order_VO();
-        vo.setId(id);
-        vo.setAmount(amount);
-        vo.setOrder_item(item_list);
-        vo.setAssociator_id(associatorId);
-        vo.setConfirm_time(confirmTime);
-        vo.setFinish_time(finishTime);
-        vo.setPay_time(payTime);
-        vo.setRestaurant_id(restaurantId);
-        vo.setState(state);
-        vo.setSubmit_time(submitTime);
-        return vo;
+    @Transient
+    private String restaurantName;
+    @Transient
+    private List<OrderItem> item_list;
+
+    public List<OrderItem> getItem_list() {
+        return item_list;
     }
+
+    public void setItem_list(List<OrderItem> item_list) {
+        this.item_list = item_list;
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
+    }
+
     public int getId() {
         return id;
     }

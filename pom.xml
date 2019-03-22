@@ -11,7 +11,7 @@
 	<groupId>nju.calabash_boy</groupId>
 	<artifactId>assigment</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>assigment</name>
+	<restaurantName>assigment</restaurantName>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

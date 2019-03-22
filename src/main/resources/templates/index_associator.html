@@ -156,6 +156,35 @@
 				<button id="make_deal">下单</button>
 			</div>
 		</div>
+		<div id = "all_order" style="display: none;">
+			<div class = "title" id = "order_title">
+				历史订单
+			</div>
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<form id = "all_order_list">
+
+				</form>
+			</div>
+		</div>
+		<div id = "single_order" style="display: none;">
+			<div class = "title" id = "order_state">
+				订单状态
+			</div>
+			<div class = "title">
+				商品清单
+			</div>
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<div class="field-label"><label >总价</label>:</div>
+				<div class="field-widget"><input class="required"  id="order_total_amount" readonly = true/></div>
+
+				<form id = "item_list">
+
+				</form>
+			</div>
+
+		</div>
 		<div class="cd-overlay"></div>
 	</main>
 
@@ -194,14 +223,14 @@
 					<li class="go-back"><a href="#0">Menu</a></li>
 					<li class="see-all"><a href="#" >Yummy!</a></li>
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
+						<a class="cd-nav-item item-1" href="#" id ="show_all_order" >
 							<h3>查看历史订单</h3>
 							<p>在这里可以查看您的所有订单</p>
 						</a>
 					</li>
 
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
+						<a class="cd-nav-item item-1" href="#" id = "show_now_order" >
 							<h3>进行中订单</h3>
 							<p>查看当前进行中的订单</p>
 						</a>
@@ -270,9 +299,9 @@
 
 	<script type="text/javascript">
 		function only_show(id){
-			var list = ["information","welcome","address_all","address_adding","all_restaurants","single_restaurant","car"];
-			for (var i = 0;i<list.length;i ++){
-				var temp_id = list[i];
+			let list = ["single_order","all_order","information","welcome","address_all","address_adding","all_restaurants","single_restaurant","car"];
+			for (let i = 0;i<list.length;i ++){
+				let temp_id = list[i];
 				if (id == temp_id){
 					document.getElementById(id).style.display = "block";
 				}else{
@@ -322,7 +351,7 @@
 					</fieldset>`;
         }
 		function refresh_address(){
-		    var associator_id = [[${session.user.id}]];
+		    let associator_id = "[[${session.user.id}]]";
             $.ajax({
                 url:"/associator/address/get",
                 data:{
@@ -330,58 +359,64 @@
                 },
                 success:function(data){
                     //console.log(data);
-					var html_string = "";
-					for (var i = 0;i < data.length;i++){
+					let html_string = "";
+					for (let i = 0;i < data.length;i++){
 					    html_string += make_address(data[i].name,data[i].address_content,data[i].id);
 					}
 					$("#addresses").html(html_string);
-					for (var i = 0;i < data.length;i ++){
-                            var id = data[i].id;
-                            //console.log("#address_delete_"+id);
-                            $("#address_delete_"+id).click(function(event){
-                                $.ajax({
-                                    url:"/associator/address/delete",
-                                    data:{
-                                        id:id
-                                    },
-                                    success:function(data){
-                                        console.log(data);
-                                        if (data == "success"){
-                                            $("#welcome").html("成功删除送餐地址");
-                                            only_show("welcome");
-                                        }else{
-                                            $("#welcome").html("系统错误，请重试");
-                                            only_show("welcome");
-                                        }
-                                    },
-                                    fail:function (data) {
-                                        console.log(data);
-                                    }
-                                })
-                            });
-                            $("#address_update_"+id).click(function(event){
-                                var address_content = $("#address_update_content_"+ id).val();
-                                $.ajax({
-                                    url:"/associator/address/update",
-                                    data:{
-                                        id:id,
-                                        address_content:address_content
-                                    },
-                                    success:function(data){
-                                        console.log(data);
-                                        if (data == "success"){
-                                            $("#welcome").html("成功修改送餐地址");
-                                            only_show("welcome");
-                                        }else{
-                                            $("#welcome").html("系统错误，请重试");
-                                            only_show("welcome");
-                                        }
-                                    },
-                                    fail:function (data) {
-                                        console.log(data);
-                                    }
-                                })
-                            })
+					for (let i = 0;i < data.length;i ++){
+                            let id = data[i].id;
+							(function xxxxx(id){
+								$("#address_delete_"+id).click(function(event){
+									$.ajax({
+										url:"/associator/address/delete",
+										data:{
+											id:id
+										},
+										success:function(data){
+											console.log(data);
+											if (data == "success"){
+												$("#welcome").html("成功删除送餐地址");
+												only_show("welcome");
+											}else{
+												$("#welcome").html("系统错误，请重试");
+												only_show("welcome");
+											}
+										},
+										fail:function (data) {
+											console.log(data);
+										}
+									})
+								});
+							})(id);
+							(function aa(id){
+								$("#address_update_"+id).click(function(event){
+									console.log("address_update_content_"+id);
+
+									let address_content = $("#address_update_content_"+ id).val();
+									console.log(address_content);
+									$.ajax({
+										url:"/associator/address/update",
+										data:{
+											id:id,
+											address_content:address_content
+										},
+										success:function(data){
+											console.log(data);
+											if (data == "success"){
+												$("#welcome").html("成功修改送餐地址");
+												only_show("welcome");
+											}else{
+												$("#welcome").html("系统错误，请重试");
+												only_show("welcome");
+											}
+										},
+										fail:function (data) {
+											console.log(data);
+										}
+									})
+								})
+							})(id);
                         }
 
 
@@ -416,16 +451,20 @@
                 },
                 success(data){
                     window.restaurant_data = data;
-                    var html_str = "";
-                    for (var i = 0;i < data.length;i++){
+                    let html_str = "";
+                    for (let i = 0;i < data.length;i++){
                         html_str += make_product(data[i]);
                     }
                      $("#products").html(html_str);
-                    for (var i = 0;i <data.length;i++){
-                        var id = data[i].id;
-                        $("#product_buy_"+id).click(function(event){
-							add_product(id);
-						});
+                    for (let i = 0;i <data.length;i++){
+                    	let I = i;
+                        let id = data[I].id;
+						(function x(id){
+                        	$("#product_buy_"+id).click(function(event){
+                        		console.log("functionid");
+								add_product(id);
+							});
+						})(id);
 					}
                 },
                 fail(data){
@@ -439,30 +478,34 @@
                 data:{},
                 success:function(data){
                     console.log(data);
-                    var html_string = "";
-                    for (var i = 0;i < data.length;i++){
+                    let html_string = "";
+                    for (let i = 0;i < data.length;i++){
                         html_string += make_restaurant(data[i]);
                     }
                      $("#restaurants").html(html_string);
-                    for (var i = 0;i < data.length;i ++){
-                        var id = data[i].id;
-                        $("#restaurant_single_"+id).click(function(event){
-                            console.log("#restaurant_single_"+id);
-                            $.ajax({
-                                url:"/restaurant/one",
-                                data:{
-                                    id:id
-                                },
-                                success:function(data){
-                                    console.log(data);
-                                    refresh_single_restaurant(data);
-                                    only_show("single_restaurant");
-                                },
-                                fail:function (data) {
-                                    console.log(data);
-                                }
-                            })
-                        });
+                    for (let i = 0;i < data.length;i ++){
+                        let id = data[i].id;
+                        console.log("tied");
+						(function bb(id){
+							$("#restaurant_single_"+id).click(function(event){
+								console.log("click");
+								//console.log("#restaurant_single_"+id);
+								$.ajax({
+									url:"/restaurant/one",
+									data:{
+										id:id
+									},
+									success:function(data){
+										console.log(data);
+										refresh_single_restaurant(data);
+										only_show("single_restaurant");
+									},
+									fail:function (data) {
+										console.log(data);
+									}
+								})
+							});
+						})(id);
                     }
                 },
                 fail:function (data) {
@@ -492,33 +535,146 @@
 				url:"/shop_car/shop_list",
 				success(shop_list){
 					console.log(shop_list);
-					var html_str = "";
-					for (var i = 0;i < shop_list.length;i++){
-					    var data = shop_list[i];
+					let html_str = "";
+					for (let i = 0;i < shop_list.length;i++){
+					    let data = shop_list[i];
 					    html_str += make_shop_item(data);
 					}
 					$("#product_list").html(html_str);
-					for (var i = 0;i < shop_list.length;i++){
-						var id = shop_list[i].id;
-						var number = shop_list[i].number;
-						$("#product_delete_"+id).click(function (event) {
-							$.ajax({
-								url:"/shop_car/delete_item",
-								data:{
-									item_id:id,
-									number:number
-								},
-								success(data){
-									console.log("here");
-									refresh_product_list();
-								}
+					for (let i = 0;i < shop_list.length;i++){
+						let id = shop_list[i].id;
+						let number = shop_list[i].number;
+						(function ddd(id,number){
+							$("#product_delete_"+id).click(function (event) {
+								$.ajax({
+									url:"/shop_car/delete_item",
+									data:{
+										item_id:id,
+										number:number
+									},
+									success(data){
+										console.log("here");
+										refresh_product_list();
+									}
+								})
 							})
-						})
+						})(id,number);
 					}
 				}
 			})
 		}
-
+		function make_order(order){
+			return `<fieldset >
+								<legend>` +order.restaurantName+ `</legend>
+								<div>
+									<div class=\"form-row\">
+										<div class=\"field-label\"><label >总价</label>:</div>
+										<div class=\"field-widget\"><input class=\"required\"  value = \"`+order.amount+`\" readonly = true/></div>
+					                    <br>
+					                    <div class=\"field-label\"><label >时间</label>:</div>
+					                    <div class=\"field-widget\"><input class=\"required\"  value = \"`+order.submitTime+`\" readonly = true/></div>
+					                    <br>
+					                    <button id = \"order_detail_`+order.id+`\">查看</button>
+									</div>
+								</div>
+							</fieldset>`;
+		}
+		function make_item(item){
+			return `<fieldset >
+								<legend>` +item.name+ `</legend>
+								<div>
+									<div class=\"form-row\">
+										<div class=\"field-label\"><label >总价</label>:</div>
+										<div class=\"field-widget\"><input class=\"required\"  value = \"`+item.amount+`\" readonly = true/></div>
+					                    <br>
+					                    <div class=\"field-label\"><label >数量</label>:</div>
+					                    <div class=\"field-widget\"><input class=\"required\"  value = \"`+item.number+`\" readonly = true/></div>
+									</div>
+								</div>
+							</fieldset>`
+		}
+		function refresh_all_order(){
+			let id = "[[${session.user.id}]]";
+			$("#order_title").html("历史订单");
+			console.log(id);
+			$.ajax({
+				url:"/order/get_all_associator",
+				data:{
+					user_id:id
+				},
+				success(data){
+					console.log(data);
+					let html_str = "";
+					for (let i = 0;i < data.length;i++){
+						html_str += make_order(data[i]);
+					}
+					$("#all_order_list").html(html_str);
+					for (let i = 0;i < data.length;i++){
+						let id = data[i].id;
+						(function xx(id){
+							$("#order_detail_"+id).click(function(event){
+								refresh_single_order(id);
+								only_show("single_order");
+							})
+						})(id);
+					}
+				}
+			})
+		}
+		function refresh_now_order(){
+			let id = "[[${session.user.id}]]";
+			$("#order_title").html("进行中订单");
+			console.log(id);
+			$.ajax({
+				url:"/order/get_all_associator_now",
+				data:{
+					user_id:id
+				},
+				success(data){
+					console.log(data);
+					let html_str = "";
+					for (let i = 0;i < data.length;i++){
+						html_str += make_order(data[i]);
+					}
+					$("#all_order_list").html(html_str);
+					for (let i = 0;i < data.length;i++){
+						let id = data[i].id;
+						(function ddddd(id){
+							$("#order_detail_"+id).click(function(event){
+								refresh_single_order(id);
+								only_show("single_order");
+							})
+						})(id);
+					}
+				}
+			})
+		}
+		function refresh_single_order(order_id){
+			$.ajax({
+				url:"/order/get_detail",
+				data:{
+					order_id:order_id
+				},
+				success(data){
+					console.log(data);
+					$("#order_state").html("订单状态： "+data.state);
+					$("#order_total_amount").val(data.amount);
+					let html_str = "";
+					for (let i =0;i < data.item_list.length;i++){
+						html_str += make_item(data.item_list[i]);
+					}
+					$("#item_list").html(html_str);
+				}
+			})
+		}
+		$("#show_all_order").click(function (event) {
+			refresh_all_order();
+			only_show("all_order");
+		})
+		$("#show_now_order").click(function (event) {
+			refresh_now_order();
+			only_show("all_order");
+		})
 		$("#look_up_car").click(function(event){
 		    refresh_product_list();
 		   only_show("car");
@@ -528,11 +684,22 @@
 			only_show("all_restaurants");
 		})
 		$("#make_deal").click(function (event) {
-
+			$.ajax({
+				url:"/order/make_deal",
+				success(data){
+					console.log(data);
+					$("#welcome").html("下单成功！");
+					only_show("welcome");
+				},
+				fail(data){
+					console.log(data);
+					$("#welcome").html("系统错误");
+				}
+			})
 		})
 		$("#address_submit").click(function(event){
-		    var name = $("#address_add_name").val();
-		    var address_content = $("#address_add_content").val();
+		    let name = $("#address_add_name").val();
+		    let address_content = $("#address_add_content").val();
             $.ajax({
                 url:"/associator/address/add",
                 data:{
@@ -566,11 +733,11 @@
 		   only_show("address_all");
 		});
 		$("#information_submit").click(function (event) {
-			var mail = $("#field14").val();
-			var name = $("#field21").val();
-			var phone = $("#field22").val();
-			var password = $("#field41").val();
-			var username = "[[${session.user.username}]]";
+			let mail = $("#field14").val();
+			let name = $("#field21").val();
+			let phone = $("#field22").val();
+			let password = $("#field41").val();
+			let username = "[[${session.user.username}]]";
             $.ajax({
                 url:"/associator/update",
                 data:{
@@ -597,7 +764,7 @@
 
         })
 		$("#dispose").click(function (even) {
-			var flag = confirm("此操作不可撤销，是否继续？");
+			let flag = confirm("此操作不可撤销，是否继续？");
         	if (!flag)return;
         	flag = confirm("重要的事情说三遍，是否继续？")
 			if (!flag)return;
