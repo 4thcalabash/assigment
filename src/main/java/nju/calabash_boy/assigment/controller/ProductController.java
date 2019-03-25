@@ -17,6 +17,14 @@ import java.util.List;
 public class ProductController {
     @Autowired
     private ProductRepository product_dao;
+    @RequestMapping("/update")
+    String update(@RequestParam("id")Integer id,
+                  @RequestParam("price")Double price,
+                  @RequestParam("number")Integer number){
+        product_dao.update_price(id,price);
+        product_dao.update_number(id,number);
+        return "success";
+    }
     @RequestMapping("/all")
     List<Product> get_all(@RequestParam("restaurant_id")Integer restaurant_id){
         return product_dao.findAllByRestaurantId(restaurant_id);

@@ -121,6 +121,17 @@
 			</div>
 
 		</div>
+		<div id = "all_product" style="display: none;">
+			<div class = "title">
+				餐品列表
+			</div>
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<form id = "all_product_list">
+
+				</form>
+			</div>
+		</div>
 		<div class="cd-overlay"></div>
 	</main>
 
@@ -165,9 +176,9 @@
 						</a>
 					</li>
 					<li>
-						<a class="cd-nav-item item-1" href="#" id = "add_product_number">
+						<a class="cd-nav-item item-1" href="#" id = "show_all_product">
 							<h3>查看餐品</h3>
-							<p>点击更新餐品库存</p>
+							<p>查看/修改当前餐品</p>
 						</a>
 					</li>
 				</ul>
@@ -373,6 +384,63 @@
 				}
 			})
 		}
+		function make_product(p){
+			return `<fieldset >
+						<legend>` +p.name+ `</legend>
+						<div>
+							<div class=\"form-row\">
+								<div class=\"field-label\"><label >单价</label>:</div>
+								<div class=\"field-widget\"><input class=\"required\"  value = \"`+p.price+`\" id = \"price_input_`+p.id+`\" /></div>
+                                <br>
+                                <div class=\"field-label\"><label >剩余个数</label>:</div>
+                                <div class=\"field-widget\"><input class=\"required\"  value = \"`+p.number+`\" id = \"number_input_`+p.id+`\"/></div>
+                                <br>
+                                <button id = \"update_product_`+p.id+`\">更新</button>
+							</div>
+						</div>
+					</fieldset>`;
+		}
+		function refresh_all_product(){
+			let id = "[[${session.user.id}]]";
+        	$.ajax({
+				url:"/product/all",
+				data:{
+					restaurant_id:id
+				},
+				success(data){
+					console.log(data);
+					let html_str = "";
+					for (let i = 0;i < data.length;i++){
+						html_str += make_product(data[i]);
+					}
+					$("#all_product_list").html(html_str);
+					for (let i = 0;i < data.length;i++){
+						let id = data[i].id;
+
+						$("#update_product_"+id).click(function (event) {
+							let price = $("#price_input_"+id).val();
+							let number = $("#number_input_"+id).val();
+							$.ajax({
+								url:"/product/update",
+								data:{
+									id:id,
+									price:price,
+									number:number
+								},
+								success(data){
+									console.log(data);
+									refresh_all_product();
+								}
+							})
+						})
+					}
+
+				},
+				fail(data){
+					console.log(data);
+				}
+			})
+		}
 		$("#show_all_order").click(function(event){
 			refresh_all_order();
 			only_show("all_order");
@@ -451,12 +519,12 @@
 				}
 			})
 		})
-		$("#add_product_number").click(function(event){
+		$("#show_all_product").click(function(event){
 			refresh_all_product();
 			only_show("all_product");
 		})
 		function only_show(id){
-			let list = ["product_adding","all_product","product_number_adding" ,"single_order","all_order","welcome","single_order","information"];
+			let list = ["product_adding","all_product","single_order","all_order","welcome","single_order","information"];
 			for (let i = 0;i<list.length;i ++){
 				let temp_id = list[i];
 				if (id == temp_id){

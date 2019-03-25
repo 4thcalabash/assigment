@@ -32,7 +32,10 @@ public class OrderController {
         if (order.getState().equals("confirming")){
             LocalDateTime submit_time = order.getSubmitTime();
             LocalDateTime now_time = LocalDateTime.now();
-            now_time.minusMinutes(AUTO_DECLINE_MINUTE);
+            System.out.println("now_time:"+now_time.toString());
+            now_time = now_time.minusMinutes(AUTO_DECLINE_MINUTE);
+            System.out.println("limit_time:"+now_time.toString());
+            System.out.println("order_time:"+submit_time.toString());
             if (submit_time.compareTo(now_time)<0){
                 order_dao.decline(order.getId());
             }
