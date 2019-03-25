@@ -32,6 +32,16 @@ public class Order {
     private String restaurantName;
     @Transient
     private List<OrderItem> item_list;
+    @Transient
+    private String associatorName;
+
+    public String getAssociatorName() {
+        return associatorName;
+    }
+
+    public void setAssociatorName(String associatorName) {
+        this.associatorName = associatorName;
+    }
 
     public List<OrderItem> getItem_list() {
         return item_list;

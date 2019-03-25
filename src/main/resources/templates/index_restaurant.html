@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta restaurantName="viewport" content="width=device-width, initial-scale=1">
@@ -22,8 +22,104 @@
 
 	<main class="cd-main-content">
 		<!-- your content here -->
-		<div id = "container">
+		<div id = "welcome">
 			Welcome
+		</div>
+		<div id = "all_order" style="display: none;">
+			<div class = "title" id = "order_title">
+				历史订单
+			</div>
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<form id = "all_order_list">
+
+				</form>
+			</div>
+		</div>
+		<div id = "single_order" style="display: none;">
+			<div class = "title" id = "order_state">
+				订单状态
+			</div>
+			<div class = "title">
+				商品清单
+			</div>
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<div class="field-label"><label >总价</label>:</div>
+				<div class="field-widget"><input class="required"  id="order_total_amount" readonly = true/></div>
+
+				<form id = "item_list">
+
+				</form>
+				<button id="new_order_confirm">确认</button>
+			</div>
+
+		</div>
+		<div id = "information" >
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<form id="test">
+					<fieldset>
+						<legend>账号信息</legend>
+						<div class="form-row">
+							<div class="field-label"><label for="field11">ID</label>:</div>
+							<div class="field-widget"><input name="field11" id="field11" class="required" title="用于登陆的ID" th:attr="value=${session.user.id}" readonly = "true"/></div>
+						</div>
+						<div class="form-row">
+							<div class="field-label"><label for="field15">注册时间</label>:</div>
+							<div class="field-widget"><input name="field15" id="field15" class="required" title="您的注册时间" th:attr = "value = ${session.user.register_time}" readonly = "true	"/></div>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>餐厅信息</legend>
+						<div class="form-row">
+							<div class="field-label"><label for="field21">餐厅名字</label>:</div>
+							<div class="field-widget"><input name="field21" id="field21" class="required" title="您餐厅的名字" th:attr = "value = ${session.user.name}" /></div>
+						</div>
+						<div class="form-row">
+							<div class="field-label"><label for="field22">餐厅类型</label>:</div>
+							<div class="field-widget"><input name="field22" id="field22" class="required" title="您餐厅的类型" th:attr = "value = ${session.user.Type}" /></div>
+						</div>
+						<div class="form-row">
+							<div class="field-label"><label for="field23">餐厅地址</label>:</div>
+							<div class="field-widget"><input name="field23" id="field23" class="required" title="您餐厅的地址" th:attr = "value = ${session.user.address}" /></div>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend class="optional">安全</legend>
+						<div class="form-row">
+							<div class="field-label"><label for="field41">请输入密码</label>:</div>
+							<div class="field-widget">
+								<input name="field41" id="field41" class="optional" type = "password" title="请输入密码以提交修改" />
+							</div>
+						</div>
+					</fieldset>
+
+				</form>
+				<button id = "information_submit" >提交</button>
+				<button id = "information_back" >后退</button>
+			</div>
+		</div>
+		<div id = "product_adding" style="display: none;">
+			<div class = "title" >
+				添加餐品
+			</div>
+			<link title="style1" rel="stylesheet" href="css/style.css" type="text/css" />
+			<div class="form_content">
+				<form >
+					<fieldset>
+						<div class="form-row">
+							<div class="field-label"><label >餐品名</label>:</div>
+							<div class="field-widget"><input class="required"  id="new_product_name" /></div>						</div>
+						<div class="form-row">
+							<div class="field-label"><label >单价</label>:</div>
+							<div class="field-widget"><input class="required"  id="new_product_price"  oninput = "value=value.replace(/[^\d]/g,'')"/></div>
+						</div>
+					</fieldset>
+				</form>
+				<button id="new_product_confirm">确认</button>
+			</div>
+
 		</div>
 		<div class="cd-overlay"></div>
 	</main>
@@ -36,20 +132,20 @@
 					<li class="go-back"><a href="#0">Menu</a></li>
 					<li class="see-all"><a href="#" >Yummy!</a></li>
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
+						<a class="cd-nav-item item-1" href="#" id = "show_all_order">
 							<h3>查看历史订单</h3>
 							<p>在这里可以查看您的所有订单</p>
 						</a>
 					</li>
 
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
+						<a class="cd-nav-item item-1" href="#" id = show_now_order >
 							<h3>进行中订单</h3>
 							<p>查看当前进行中的订单</p>
 						</a>
 					</li>
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
+						<a class="cd-nav-item item-1" href="#" id = "show_new_order">
 							<h3>查看新订单</h3>
 							<p>查看所有待确认订单</p>
 						</a>
@@ -63,16 +159,15 @@
 					<li class="go-back"><a href="#0">Menu</a></li>
 					<li class="see-all"><a href="#" >Yummy!</a></li>
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
+						<a class="cd-nav-item item-1" href="#" id = "add_product">
 							<h3>发布美食信息</h3>
 							<p>点击发布新的美食信息</p>
 						</a>
 					</li>
-
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
-							<h3>查看历史信息</h3>
-							<p>这里您可以查看由您发布的所有历史信息</p>
+						<a class="cd-nav-item item-1" href="#" id = "add_product_number">
+							<h3>查看餐品</h3>
+							<p>点击更新餐品库存</p>
 						</a>
 					</li>
 				</ul>
@@ -84,7 +179,7 @@
 					<li class="go-back"><a href="#0">Menu</a></li>
 					<li class="see-all"><a href="#" >Yummy! </a></li>
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
+						<a class="cd-nav-item item-1" href="#" id = "show_information">
 							<h3>查看餐厅信息</h3>
 							<p>在这里可以查看并修改餐厅的类型、地点等注册信息</p>
 						</a>
@@ -127,6 +222,250 @@
                 }
             })
         })
+		function make_order(order){
+			return `<fieldset >
+								<legend>` +order.associatorName+ `</legend>
+								<div>
+									<div class=\"form-row\">
+										<div class=\"field-label\"><label >总价</label>:</div>
+										<div class=\"field-widget\"><input class=\"required\"  value = \"`+order.amount+`\" readonly = true/></div>
+					                    <br>
+					                    <div class=\"field-label\"><label >时间</label>:</div>
+					                    <div class=\"field-widget\"><input class=\"required\"  value = \"`+order.submitTime+`\" readonly = true/></div>
+					                    <br>
+					                    <button id = \"order_detail_`+order.id+`\">查看</button>
+									</div>
+								</div>
+							</fieldset>`;
+		}
+		function make_item(item){
+			return `<fieldset >
+								<legend>` +item.name+ `</legend>
+								<div>
+									<div class=\"form-row\">
+										<div class=\"field-label\"><label >总价</label>:</div>
+										<div class=\"field-widget\"><input class=\"required\"  value = \"`+item.amount+`\" readonly = true/></div>
+					                    <br>
+					                    <div class=\"field-label\"><label >数量</label>:</div>
+					                    <div class=\"field-widget\"><input class=\"required\"  value = \"`+item.number+`\" readonly = true/></div>
+									</div>
+								</div>
+							</fieldset>`
+		}
+		function refresh_single_order(order_id,flag){
+			if (flag == "new"){
+				document.getElementById("new_order_confirm").style.display ="block";
+				$("#new_order_confirm").click(function(event){
+					$.ajax({
+						url:"/order/confirm",
+						data:{
+							order_id:order_id
+						},
+						success(data){
+							refresh_single_order(order_id);
+						}
+					});
+				})
+			}else{
+				document.getElementById("new_order_confirm").style.display="none";
+				$("#new_order_confirm").click(function(event){
+					console.log("none");
+				});
+			}
+        	$.ajax({
+				url:"/order/get_detail",
+				data:{
+					order_id:order_id
+				},
+				success(data){
+					console.log(data);
+					$("#order_state").html("订单状态： "+data.state);
+					$("#order_total_amount").val(data.amount);
+					let html_str = "";
+					for (let i =0;i < data.item_list.length;i++){
+						html_str += make_item(data.item_list[i]);
+					}
+					$("#item_list").html(html_str);
+				}
+			})
+		}
+		function refresh_all_order(){
+			let id = "[[${session.user.id}]]";
+			$("#order_title").html("历史订单");
+			console.log(id);
+			$.ajax({
+				url:"/order/get_all_restaurant",
+				data:{
+					user_id:id
+				},
+				success(data){
+					console.log(data);
+					let html_str = "";
+					for (let i = 0;i < data.length;i++){
+						html_str += make_order(data[i]);
+					}
+					$("#all_order_list").html(html_str);
+					for (let i = 0;i < data.length;i++){
+						let id = data[i].id;
+						(function xx(id){
+							$("#order_detail_"+id).click(function(event){
+								refresh_single_order(id);
+								only_show("single_order");
+							})
+						})(id);
+					}
+				}
+			})
+		}
+		function refresh_now_order(){
+			let id = "[[${session.user.id}]]";
+			$("#order_title").html("进行中订单");
+			console.log(id);
+			$.ajax({
+				url:"/order/get_now_restaurant",
+				data:{
+					user_id:id
+				},
+				success(data){
+					console.log(data);
+					let html_str = "";
+					for (let i = 0;i < data.length;i++){
+						html_str += make_order(data[i]);
+					}
+					$("#all_order_list").html(html_str);
+					for (let i = 0;i < data.length;i++){
+						let id = data[i].id;
+						(function xx(id){
+							$("#order_detail_"+id).click(function(event){
+								refresh_single_order(id);
+								only_show("single_order");
+							})
+						})(id);
+					}
+				}
+			})
+		}
+		function refresh_new_order(){
+			let id = "[[${session.user.id}]]";
+			$("#order_title").html("新订单");
+			console.log(id);
+			$.ajax({
+				url:"/order/get_new_restaurant",
+				data:{
+					user_id:id
+				},
+				success(data){
+					console.log(data);
+					let html_str = "";
+					for (let i = 0;i < data.length;i++){
+						html_str += make_order(data[i]);
+					}
+					$("#all_order_list").html(html_str);
+					for (let i = 0;i < data.length;i++){
+						let id = data[i].id;
+						(function xx(id){
+							$("#order_detail_"+id).click(function(event){
+								refresh_single_order(id,"new");
+								only_show("single_order");
+							})
+						})(id);
+					}
+				}
+			})
+		}
+		$("#show_all_order").click(function(event){
+			refresh_all_order();
+			only_show("all_order");
+		})
+		$("#show_now_order").click(function (event) {
+			refresh_now_order();
+			only_show("all_order");
+		})
+		$("#show_new_order").click(function (event) {
+			refresh_new_order();
+			only_show("all_order");
+		})
+		$("#show_information").click(function(event){
+			only_show("information");
+		});
+		$("#information_back").click(function (event) {
+			$("#welcome").html("welcome");
+			only_show("welcome");
+		})
+		$("#information_submit").click(function (event) {
+			let name = $("#field21").val();
+			let type = $("#field22").val();
+			let address = $("#field23").val();
+			let password = $("#field41").val();
+			let username = "[[${session.user.id}]]";
+			$.ajax({
+				url:"/restaurant/update",
+				data:{
+					name:name,
+					type:type,
+					address:address,
+					id:username,
+					password:password
+				},
+				success:function(data){
+					console.log(data);
+					if (data == "success"){
+						$("#welcome").html("信息修改成功");
+						only_show("welcome");
+					}else{
+						$("#welcome").html("密码错误，请重新修改");
+						only_show("welcome");
+					}
+				},
+				fail:function (data) {
+					console.log(data);
+				}
+			})
+
+		})
+		$("#add_product").click(function (even) {
+			only_show("product_adding");
+		});
+		$("#new_product_confirm").click(function (event) {
+			let name = $("#new_product_name").val();
+			let price = $("#new_product_price").val();
+			if (name == null || price == null)return;
+			$.ajax({
+				url:"/product/add",
+				data:{
+					name:name,
+					price:price,
+					number:0
+				},
+				success(data){
+					if (data == "success"){
+						$("#welcome").html("成功添加餐品");
+						only_show("welcome");
+					}else{
+						$("#welcome").html("添加失败");
+						only_show("welcome");
+					}
+				},
+				fail(data){
+					console.log("qtmwl");
+				}
+			})
+		})
+		$("#add_product_number").click(function(event){
+			refresh_all_product();
+			only_show("all_product");
+		})
+		function only_show(id){
+			let list = ["product_adding","all_product","product_number_adding" ,"single_order","all_order","welcome","single_order","information"];
+			for (let i = 0;i<list.length;i ++){
+				let temp_id = list[i];
+				if (id == temp_id){
+					document.getElementById(id).style.display = "block";
+				}else{
+					document.getElementById(temp_id).style.display = "none";
+				}
+			}
+		}
 	</script>
 </body>
 </html>

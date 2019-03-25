@@ -1,10 +1,7 @@
 package nju.calabash_boy.assigment.controller;
 
 import nju.calabash_boy.assigment.entity.*;
-import nju.calabash_boy.assigment.jpa.OrderItemRepository;
-import nju.calabash_boy.assigment.jpa.OrderRepository;
-import nju.calabash_boy.assigment.jpa.ProductRepository;
-import nju.calabash_boy.assigment.jpa.RestaurantRepository;
+import nju.calabash_boy.assigment.jpa.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +25,23 @@ public class OrderController {
     private OrderItemRepository order_item_dao;
     @Autowired
     private RestaurantRepository restaurant_dao;
+    @Autowired
+    private AssociatorRepository associator_dao;
+    private final static int AUTO_DECLINE_MINUTE = 1;
+    private Order check(Order order){
+        if (order.getState().equals("confirming")){
+            LocalDateTime submit_time = order.getSubmitTime();
+            LocalDateTime now_time = LocalDateTime.now();
+            now_time.minusMinutes(AUTO_DECLINE_MINUTE);
+            if (submit_time.compareTo(now_time)<0){
+                order_dao.decline(order.getId());
+            }
+            order.setState("declined");
+            return order;
+        }else{
+            return order;
+        }
+    }
     @RequestMapping("/make_deal")
     public void make_deal(HttpServletRequest request){
         HttpSession session = request.getSession();
@@ -66,18 +80,54 @@ public class OrderController {
         List<Order> ans = new ArrayList<>();
         for (Order order : list){
             order.setRestaurantName(restaurant_dao.findByIdAndDeletedIsFalse(order.getRestaurantId()).getName());
-            ans.add(order);
+            ans.add(check(order));
         }
         return ans;
     }
     @RequestMapping("/get_all_associator_now")
     public List<Order> get_all_now(@RequestParam("user_id")Integer id){
         List<Order> list = order_dao.findAllByAssociatorIdAndState(id,"delivering");
+        List<Order> ans = new ArrayList<>();
+        for (Order order : list){
+            order.setRestaurantName(restaurant_dao.findByIdAndDeletedIsFalse(order.getRestaurantId()).getName());
+            ans.add(check(order));
+        }
+        return ans;
+    }
+
+    @RequestMapping("/get_all_restaurant")
+    public List<Order> get_all_rest(@RequestParam("user_id")Integer id){
+        List<Order> list = order_dao.findAllByRestaurantId(id);
 
         List<Order> ans = new ArrayList<>();
         for (Order order : list){
             order.setRestaurantName(restaurant_dao.findByIdAndDeletedIsFalse(order.getRestaurantId()).getName());
-            ans.add(order);
+            order.setAssociatorName(associator_dao.getById(order.getAssociatorId()).getName());
+            ans.add(check(order));
+        }
+        return ans;
+    }
+    @RequestMapping("/get_now_restaurant")
+    public List<Order> get_now_rest(@RequestParam("user_id")Integer id){
+        List<Order> list = order_dao.findAllByRestaurantIdAndState(id,"delivering");
+
+        List<Order> ans = new ArrayList<>();
+        for (Order order : list){
+            order.setRestaurantName(restaurant_dao.findByIdAndDeletedIsFalse(order.getRestaurantId()).getName());
+            order.setAssociatorName(associator_dao.getById(order.getAssociatorId()).getName());
+            ans.add(check(order));
+        }
+        return ans;
+    }
+    @RequestMapping("/get_new_restaurant")
+    public List<Order> get_new_rest(@RequestParam("user_id")Integer id){
+        List<Order> list = order_dao.findAllByRestaurantIdAndState(id,"confirming");
+
+        List<Order> ans = new ArrayList<>();
+        for (Order order : list){
+            order.setRestaurantName(restaurant_dao.findByIdAndDeletedIsFalse(order.getRestaurantId()).getName());
+            order.setAssociatorName(associator_dao.getById(order.getAssociatorId()).getName());
+            ans.add(check(order));
         }
         return ans;
     }
@@ -92,5 +142,9 @@ public class OrderController {
         }
         order.setItem_list(ans);
         return order;
+    }
+    @RequestMapping("/confirm")
+    public void confirm_order(@RequestParam("order_id")Integer order_id){
+        order_dao.confirm(order_id);
     }
 }
