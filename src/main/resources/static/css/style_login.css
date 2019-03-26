@@ -14,6 +14,8 @@ form input:hover{background-color:rgba(255,255,255,.4)}
 form input:focus{background-color:#fff;width:230px;color:#333}
 form button{-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:0;background-color:#fff;border:0;padding:10px 15px;color:#333;border-radius:3px;width:200px;cursor:pointer;font-family:microsoft yahei,Arial,sans-serif;font-size:16px;font-weight:700;-webkit-transition-duration:.25s;transition-duration:.25s}
 form button:hover{background-color:#f5f7f9}
+.mybtn{-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:0;background-color:#fff;border:0;padding:10px 15px;color:#333;border-radius:3px;width:200px;cursor:pointer;font-family:microsoft yahei,Arial,sans-serif;font-size:16px;font-weight:700;-webkit-transition-duration:.25s;transition-duration:.25s}
+.mybtn:hover{background-color:#f5f7f9}
 form select{
 
     outline:0;

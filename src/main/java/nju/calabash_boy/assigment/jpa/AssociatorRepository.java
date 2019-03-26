@@ -20,4 +20,5 @@ public interface AssociatorRepository extends JpaRepository<Associator,Integer>{
     @Query(value = "update associator set deleted = 1 where username = ?1 and id = ?2 and deleted = 0",nativeQuery = true)
     void delete(String username,Integer id);
     Associator getById(Integer id);
+    Associator findByUsername(String username);
 }

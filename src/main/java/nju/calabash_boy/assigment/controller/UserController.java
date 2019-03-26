@@ -27,6 +27,9 @@ public class UserController {
         }else{
             return "home";
         }
-
+    }
+    @RequestMapping("/test")
+    String go_test(){
+        return "test";
     }
 }

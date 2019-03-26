@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:margin="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta restaurantName="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +8,8 @@
 <link rel="stylesheet" href="css/style_index.css"> <!-- Resource style -->
 
 <script src="js/modernizr.js"></script> <!-- Modernizr -->
-
+	<script  src="js/jQuery.js"></script>
+	<script  src="js/jqplot.js"></script>
 </head>
 <body>
 
@@ -22,8 +23,18 @@
 
 	<main class="cd-main-content">
 		<!-- your content here -->
-		<div id = "container">
+		<div id = "welcome">
 			Welcome
+		</div>
+		<div id = "restaurant_statistic" style="display: block;">
+			<div id="chart1" style = "margin:100px"></div>
+			<div id = "chart2" style=" margin:100px"></div>
+		</div>
+		<div id = "associator_statistic" style="display: none;">
+			<div id = "associator_chart" style = "margin:100px"></div>
+		</div>
+		<div id = "finance_statistic" style="display: none;">
+			<div id = "amount_chart" style = "margin:100px"></div>
 		</div>
 		<div class="cd-overlay"></div>
 	</main>
@@ -71,19 +82,19 @@
 					<li class="go-back"><a href="#0">Menu</a></li>
 					<li class="see-all"><a href="#" >Yummy!</a></li>
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
+						<a class="cd-nav-item item-1" href="#" id="show_restaurant_statistic" >
 							<h3>餐厅统计</h3>
 							<p>在这里可以查看餐厅的统计信息</p>
 						</a>
 					</li>
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
+						<a class="cd-nav-item item-1" href="#" id = "show_associator_statistic">
 							<h3>会员统计</h3>
 							<p>在这里可以查看会员的统计信息</p>
 						</a>
 					</li>
 					<li>
-						<a class="cd-nav-item item-1" href="#" >
+						<a class="cd-nav-item item-1" href="#" id = "show_finance_statistic">
 							<h3>Yummy!财务统计</h3>
 							<p>在这里可以查看Yummy的财务情况</p>
 						</a>
@@ -107,10 +118,97 @@
 		</ul> <!-- primary-nav -->
 	</nav> <!-- cd-nav -->
 
-<script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" src="js/jquery.mobile.custom.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript">
+		function refresh_associator_statistic(){
+			$.ajax({
+				url:"/statistic/associator",
+				success(D){
+					console.log(D);
+					let list = D.associatorDailies;
+					let d1 = new Array(list.length);
+					let x = new Array(list.length);
+					let max_y = -1;
+					for (let i = 0;i <list.length;i++){
+						x[i] = list[i].time;
+						d1[i] = list[i].associator_cnt;
+						if (d1[i] > max_y)max_y = d1[i];
+					}
+					max_y += max_y / 2;
+					let data = [ d1];
+					let data_max = max_y; //Y轴最大刻度
+					let line_title = ["",""]; //曲线名称
+					let y_label = "注册用户数量"; //Y轴标题
+					let x_label = "截至时间"; //X轴标题
+					let title = "这是标题"; //统计图标标题
+					j.jqplot.diagram.base("associator_chart", data, line_title, "注册用户数量变化图", x, x_label, y_label, data_max, 1);
+
+				}
+			})
+		}
+		function refresh_restaurant_statistic(){
+			$.ajax({
+				url:"/statistic/restaurant",
+				success(D){
+					console.log(D);
+					let list = D.restaurantDailies;
+					let d1 = new Array(list.length);
+					let x = new Array(list.length);
+					let d2 = new Array(list.length);
+					let max_y = -1;
+					let max_y2 = -1;
+					for (let i = 0;i <list.length;i++){
+						x[i] = list[i].time;
+						d1[i] = list[i].restaurant_cnt;
+						d2[i] = list[i].order_cnt;
+						if (d1[i] > max_y)max_y = d1[i];
+						if (d2[i] > max_y2)max_y2 = d2[i];
+					}
+					max_y2 += max_y2 /2;
+					max_y += max_y / 2;
+					console.log(d1);
+					let data = [ d1];
+					let data2 = [d2];
+					let data_max = max_y; //Y轴最大刻度
+					let data_max2 = max_y2;
+					let line_title = ["",""]; //曲线名称
+					let y_label = "注册餐厅数量"; //Y轴标题
+					let y_label2 = "累计订单数量";
+					let x_label = "截至时间"; //X轴标题
+					//let x = [1,2,3,4,5,6,7,8,9]; //定义X轴刻度值
+					let title = "这是标题"; //统计图标标题
+					j.jqplot.diagram.base("chart1", data, line_title, "餐厅数量变化", x, x_label, y_label, data_max, 1);
+					j.jqplot.diagram.base("chart2",data2,line_title,"订单数量变化",x,x_label,y_label2,data_max2,1);
+
+				}
+			})
+		}
+		function refresh_finance_statistic(){
+			$.ajax({
+				url:"/statistic/finance",
+				success(D){
+					console.log(D);
+					let list = D.financeDailies;
+					let d1 = new Array(list.length);
+					let x = new Array(list.length);
+					let max_y = -1;
+					for (let i = 0;i <list.length;i++){
+						x[i] = list[i].time;
+						d1[i] = list[i].amount;
+						if (d1[i] > max_y)max_y = d1[i];
+					}
+					max_y += max_y / 2;
+					let data = [ d1];
+					let data_max = max_y; //Y轴最大刻度
+					let line_title = ["",""]; //曲线名称
+					let y_label = "当日成交额"; //Y轴标题
+					let x_label = "截至时间"; //X轴标题
+					let title = "这是标题"; //统计图标标题
+					j.jqplot.diagram.base("amount_chart", data, line_title, "成交额走势图", x, x_label, y_label, data_max, 1);
+
+				}
+			})
+		}
         $("#logout").click(function (event) {
             console.log("logout");
             $.ajax({
@@ -131,6 +229,32 @@
                 }
             })
         })
+		$("#show_associator_statistic").click(function (event) {
+			only_show("associator_statistic");
+			refresh_associator_statistic();
+
+		})
+		$("#show_restaurant_statistic").click(function (event) {
+			only_show("restaurant_statistic");
+			refresh_restaurant_statistic();
+
+		})
+		$("#show_finance_statistic").click(function (event) {
+			only_show("finance_statistic");
+			refresh_finance_statistic();
+
+		})
+		function only_show(id){
+			let list = ["welcome","restaurant_statistic","associator_statistic","finance_statistic"];
+			for (let i = 0;i<list.length;i ++){
+				let temp_id = list[i];
+				if (id == temp_id){
+					document.getElementById(id).style.display = "block";
+				}else{
+					document.getElementById(temp_id).style.display = "none";
+				}
+			}
+		}
 	</script>
 </body>
 </html>

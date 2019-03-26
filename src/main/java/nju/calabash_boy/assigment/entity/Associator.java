@@ -18,6 +18,15 @@ public class Associator {
     private String name;
     private String vip_level;
     private Boolean deleted;
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public void print(){
         System.out.println("ID = "+ id);
         System.out.println("username = " + username + " password = "+ password);

@@ -17,7 +17,7 @@
 
 <div id="container">
     <div id="output">
-        <div class="containerT">
+        <div class="containerT" id = "login">
             <h1>用户登录</h1>
             <div id = "alarm" ></div>
             <form class="form" id="entry_form">
@@ -31,6 +31,30 @@
                 <button type="button" id="entry_btn">登录</button>
                 <div id="prompt" class="prompt"></div>
             </form>
+            <br><br><br>
+            <button id = "show_register" class = "mybtn">转到注册</button>
+        </div>
+        <div class="containerT" id = "register" style="display: none;">
+            <h1>用户注册</h1>
+            <div id = "alarm_r" ></div>
+            <form class="form" id="entry_form_r">
+                <input type="text" placeholder="用户名" id="username_r" >
+                <input type="password" placeholder="密码" id="password_r" >
+                <input type="password" placeholder="再次输入密码" id = "password_confirm_r">
+                <input type="text" placeholder="邮箱" id = "mail_r">
+                <input type = "text" placeholder="邮箱验证码" id = "auth_code_r">
+                <input type = "text" placeholder="姓名" id = "name_r">
+                <input type = "text" placeholder="手机号" id = "phone_r">
+                <select id = "role_select_r">
+                    <option value="associator">会员</option>
+                    <option value="restaurant">餐厅</option>
+                </select>
+                <button type = "button" id = "send_auth">发送验证码</button>
+                <button type="button" id="register_submit">注册</button>
+                <div id="prompt_r" class="prompt"></div>
+            </form>
+            <br>
+            <button id = "show_login" class = "mybtn">转到登陆</button>
         </div>
     </div>
 </div>
@@ -45,6 +69,83 @@
         t.focus();
         t.select();
     },200)
+    function check_info(){
+        let mail = $("#mail_r").val();
+        let username = $("#username_r").val();
+        let pass1 = $("#password_r").val();
+        let pass2 = $("#password_confirm_r").val();
+        if (mail == null || username == null){
+            $("#alarm_r").html("请填写用户名+邮箱");
+            return false;
+        }
+        if (pass1 == null || pass2 == null ||pass1 != pass2){
+            $("#alarm_r").html("两次密码不相同");
+            return false;
+        }
+        let phone = $("#phone_r").val();
+        let name = $("#name_r").val();
+        if (phone == null || name == null){
+            $("#alarm_r").html("请填写所有信息");
+            return false;
+        }
+        return true;
+    }
+    $("#send_auth").click(function (event) {
+        let mail = $("#mail_r").val();
+        let username = $("#username_r").val();
+        if (!check_info())return;
+        $.ajax({
+            url:"/register/send_auth",
+            data:{
+                username:username,
+                mail:mail
+            },
+            success(data){
+                console.log(data);
+                $("#alarm_r").html("成功发送验证码");
+            }
+        })
+    })
+    $("#register_submit").click(function(event){
+        if (!check_info())return;
+        let code = $("#auth_code_r").val();
+        let username = $("#username_r").val();
+        let password = $("#password_r").val();
+        let phone = $("#phone_r").val();
+        let mail = $("#mail_r").val();
+        let name = $("#name_r").val();
+        let role = $("#role_select_r").val();
+        $.ajax({
+            url:"/register/confirm_auth",
+            data:{
+                mail:mail,
+                auth_code:code
+            },
+            success(data){
+                if (data == "success"){
+                    $("#alarm_r").html("验证码验证成功");
+                    $.ajax({
+                        url:"/"+role +"/add",
+                        data:{
+                            username:username,
+                            password:password,
+                            mail:mail,
+                            phone:phone,
+                            name:name
+                        },
+                        success(data){
+                            $("#alarm").html("注册成功，请登录");
+                            $("#entry_name").val(username);
+                            document.getElementById("register").style.display = "none";
+                            document.getElementById("login").style.display = "block";
+                        }
+                    })
+                }else{
+                    $("#alarm_r").html("验证码错误");
+                }
+            }
+        })
+    })
     $(document).keydown(function(event){
         if(event.keyCode==13){
             $("#entry_btn").click();
@@ -74,6 +175,14 @@
                 console.log(data);
             }
         })
+    })
+    $("#show_register").click(function (event) {
+        document.getElementById("register").style.display = "block";
+        document.getElementById("login").style.display = "none";
+    })
+    $("#show_login").click(function (event) {
+        document.getElementById("register").style.display = "none";
+        document.getElementById("login").style.display = "block";
     })
 
 </script>

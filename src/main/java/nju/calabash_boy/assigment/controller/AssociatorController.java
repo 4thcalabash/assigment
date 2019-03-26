@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nju.calabash_boy.assigment.entity.Address;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -76,5 +77,22 @@ public class AssociatorController {
     public List<Address> address_get(@RequestParam("associator_id")Integer associator_id){
         //return null;
         return address_dao.findAllByAssociatorId(associator_id);
+    }
+    @RequestMapping("/add")
+    public void add(@RequestParam("username")String username,
+                    @RequestParam("password")String password,
+                    @RequestParam("mail")String mail,
+                    @RequestParam("phone")String phone,
+                    @RequestParam("name")String name){
+        Associator ass = new Associator();
+        ass.setUsername(username);
+        ass.setPassword(password);
+        ass.setMail(mail);
+        ass.setPhone(phone);
+        ass.setName(name);
+        ass.setRegister_time(LocalDateTime.now());
+        ass.setVip_level("1星会员");
+        ass.setDeleted(false);
+        associator_dao.save(ass);
     }
 }
