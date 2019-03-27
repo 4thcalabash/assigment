@@ -31,8 +31,10 @@
                 <button type="button" id="entry_btn">登录</button>
                 <div id="prompt" class="prompt"></div>
             </form>
-            <br><br><br>
-            <button id = "show_register" class = "mybtn">转到注册</button>
+            <br><br>
+            <button id = "show_register" class = "mybtn">用户注册</button>
+            <br><br>
+            <button id = "show_register_restaurant" class = "mybtn">商家注册</button>
         </div>
         <div class="containerT" id = "register" style="display: none;">
             <h1>用户注册</h1>
@@ -45,16 +47,27 @@
                 <input type = "text" placeholder="邮箱验证码" id = "auth_code_r">
                 <input type = "text" placeholder="姓名" id = "name_r">
                 <input type = "text" placeholder="手机号" id = "phone_r">
-                <select id = "role_select_r">
-                    <option value="associator">会员</option>
-                    <option value="restaurant">餐厅</option>
-                </select>
                 <button type = "button" id = "send_auth">发送验证码</button>
                 <button type="button" id="register_submit">注册</button>
                 <div id="prompt_r" class="prompt"></div>
             </form>
             <br>
             <button id = "show_login" class = "mybtn">转到登陆</button>
+        </div>
+        <div class="containerT" id = "register_restaurant" style="display: none;">
+            <h1>餐厅注册</h1>
+            <div id = "alarm_r_restaurant" ></div>
+            <form class="form" id="entry_form_r_restaurant">
+                <input type = "text" placeholder="餐厅名" id = "name_r_restaurant">
+                <input type="password" placeholder="密码" id="password_r_restaurant" >
+                <input type="password" placeholder="再次输入密码" id = "password_confirm_r_restaurant">
+                <input type="text" placeholder="餐厅类型" id = "type_r_restaurant">
+                <input type = "text" placeholder="地址" id = "address_r_restaurant">
+                <button type="button" id="register_submit_restaurant">注册</button>
+                <div id="prompt_r_restaurant" class="prompt"></div>
+            </form>
+            <br>
+            <button id = "show_login2" class = "mybtn">转到登陆</button>
         </div>
     </div>
 </div>
@@ -125,7 +138,7 @@
                 if (data == "success"){
                     $("#alarm_r").html("验证码验证成功");
                     $.ajax({
-                        url:"/"+role +"/add",
+                        url:"/"+associator +"/add",
                         data:{
                             username:username,
                             password:password,
@@ -179,10 +192,65 @@
     $("#show_register").click(function (event) {
         document.getElementById("register").style.display = "block";
         document.getElementById("login").style.display = "none";
+        document.getElementById("register_restaurant").style.display = "none";
     })
     $("#show_login").click(function (event) {
         document.getElementById("register").style.display = "none";
         document.getElementById("login").style.display = "block";
+        document.getElementById("register_restaurant").style.display = "none";
+    })
+    $("#show_login2").click(function (event) {
+        document.getElementById("register").style.display = "none";
+        document.getElementById("login").style.display = "block";
+        document.getElementById("register_restaurant").style.display = "none";
+    })
+    $("#show_register_restaurant").click(function (event) {
+        document.getElementById("register").style.display = "none";
+        document.getElementById("login").style.display = "none";
+        document.getElementById("register_restaurant").style.display = "block";
+    })
+    $("#register_submit_restaurant").click(function (event) {
+        let name = $("#name_r_restaurant").val();
+        let password1 = $("#password_r_restaurant").val();
+        let password2 = $("#password_confirm_r_restaurant").val();
+        let type = $("#type_r_restaurant").val();
+        let address = $("#address_r_restaurant").val();
+        if (name == null || password1 == null || password2 == null || type == null || address == null){
+            $("#alarm_r_restaurant").html("请填写所有信息");
+            return;
+        }
+        if (password2 != password1){
+            $("#alarm_r_restaurant").html("两次密码不同");
+            return;
+        }
+        $.ajax({
+            url:"/restaurant/add",
+            data:{
+                name:name,
+                password:password1,
+                type:type,
+                address:address
+            },
+            success(data){
+                let id = data.id;
+                let id_str = "";
+                while (id != 0){
+                    id_str += id%10;
+                    console.log(id_str);
+                    console.log(id);
+                    id /=10;
+                    id = Math.floor(id);
+                }
+                while (id_str.length <7){
+                    id_str += '0';
+                }
+                let rev_str = "";
+                for (let i = 6;i>=0;i--){
+                    rev_str += id_str[i];
+                }
+                $("#alarm_r_restaurant").html("注册成功，您的登陆id为"+rev_str);
+            }
+        })
     })
 
 </script>

@@ -155,7 +155,18 @@
 				<form id = "product_list">
 
 				</form>
+				<div class="field-label"><label for="car_tot_amount">总价</label>:</div>
+				<div class="field-widget"><input  id="car_tot_amount" class="required" th:attr="title=${session.user.discount}"  readonly = "true"/></div>
+				<br>
+				<div class="field-label"><label for="address_select">请选择地址</label>:</div>
+				<div class = "field-label">
+					<div class="field-widget"><input  id="car_address_content" class="required"   readonly = "true"/></div>
+					<select class = "mybtn" id = "address_select">
+					<option value="associator">会员</option>
+				</select></div>
+				<br><br><br><br>
 				<button id="make_deal">下单</button>
+
 			</div>
 		</div>
 		<div id = "all_order" style="display: none;">
@@ -533,17 +544,58 @@
 								</div>
 							</fieldset>`;
 		}
+		function make_address_option(add){
+			return "<option value = \""+add.id+"\">"+add.name+"</option>";
+		}
 		function refresh_product_list(){
+			let associator_id = "[[${session.user.id}]]";
 			$("#shop_car_title").html("购物车");
+			$.ajax({
+				url:"/associator/address/get",
+				data:{
+					associator_id:associator_id
+				},
+				success(data){
+					console.log(data);
+					let html_str = "";
+					for (let i = 0;i < data.length;i++){
+						html_str += make_address_option(data[i]);
+					}
+					let show_str = data[0].address_content;
+					$("#car_address_content").val(show_str);
+					$("#address_select").html(html_str);
+					$("#address_select").change(function (event) {
+						let id = $("#address_select").val();
+						console.log(id);
+						$.ajax({
+							url:"/associator/address/get_one",
+							data:{
+								id:id
+							},
+							success(data){
+								console.log(data);
+								$("#car_address_content").val(data.address_content);
+							}
+						})
+					})
+				}
+			})
 		    $.ajax({
 				url:"/shop_car/shop_list",
 				success(shop_list){
 					console.log(shop_list);
 					let html_str = "";
+					let tot = 0;
 					for (let i = 0;i < shop_list.length;i++){
 					    let data = shop_list[i];
 					    html_str += make_shop_item(data);
+
+					    tot += data.number * data.price;
 					}
+					let discount = "[[${session.user.discount}]]";
+					tot = 1.0 * tot * discount;
+					tot = tot.toFixed(2);
+					$("#car_tot_amount").val(tot);
 					$("#product_list").html(html_str);
 					for (let i = 0;i < shop_list.length;i++){
 						let id = shop_list[i].id;
@@ -708,16 +760,28 @@
 			only_show("all_restaurants");
 		})
 		$("#make_deal").click(function (event) {
+			let address_id = $("#address_select").val();
 			$.ajax({
-				url:"/order/make_deal",
+				url:"/shop_car/shop_list",
 				success(data){
 					console.log(data);
-					$("#welcome").html("下单成功！");
-					only_show("welcome");
-				},
-				fail(data){
-					console.log(data);
-					$("#welcome").html("系统错误");
+					if (data.length !=0){
+						$.ajax({
+							url:"/order/make_deal",
+							data:{
+								address_id:address_id
+							},
+							success(data){
+								console.log(data);
+								$("#welcome").html("下单成功！");
+								only_show("welcome");
+							},
+							fail(data){
+								console.log(data);
+								$("#welcome").html("系统错误");
+							}
+						})
+					}
 				}
 			})
 		})

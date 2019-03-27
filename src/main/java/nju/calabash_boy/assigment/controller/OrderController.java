@@ -52,7 +52,8 @@ public class OrderController {
         }
     }
     @RequestMapping("/make_deal")
-    public void make_deal(HttpServletRequest request){
+    public void make_deal(@RequestParam("address_id")Integer address_id,
+                          HttpServletRequest request){
         HttpSession session = request.getSession();
         if (session.getAttribute("shop_id") == null)return;
         Integer shop_id = (Integer)session.getAttribute("shop_id");
@@ -62,11 +63,15 @@ public class OrderController {
         order.setRestaurantId(shop_id);
         order.setState("confirming");
         order.setSubmitTime(LocalDateTime.now());
+        order.setAddressId(address_id);
         double amount = 0;
         for (Integer key : mp.keySet()){
             Product p = product_dao.getById(key);
             amount += mp.get(key) * p.getPrice();
         }
+        Associator ass = (Associator)session.getAttribute("user");
+        double discount = ass.getDiscount();
+        amount *= discount;
         order.setAmount(amount);
         Order result = order_dao.save(order);
         System.out.println(result.getId());

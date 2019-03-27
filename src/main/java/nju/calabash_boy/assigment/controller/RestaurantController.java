@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,5 +40,19 @@ public class RestaurantController {
         }else{
             return "password_wrong";
         }
+    }
+    @RequestMapping("/add")
+    public Restaurant add_restaurant(@RequestParam("name")String name,
+                                     @RequestParam("password")String password,
+                                     @RequestParam("type")String type,
+                                     @RequestParam("address")String address){
+        Restaurant rest = new Restaurant();
+        rest.setAddress(address);
+        rest.setType(type);
+        rest.setDeleted(false);
+        rest.setName(name);
+        rest.setPassword(password);
+        rest.setRegister_time(LocalDateTime.now());
+        return restaurant_dao.save(rest);
     }
 }

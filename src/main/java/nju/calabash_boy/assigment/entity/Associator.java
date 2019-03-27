@@ -18,6 +18,15 @@ public class Associator {
     private String name;
     private String vip_level;
     private Boolean deleted;
+    private double discount;
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
 
     public Boolean getDeleted() {
         return deleted;

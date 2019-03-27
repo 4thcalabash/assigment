@@ -63,6 +63,10 @@ public class AssociatorController {
             return "fail";
         }
     }
+    @RequestMapping("/address/get_one")
+    public Address get_one(@RequestParam("id")Integer id){
+        return address_dao.getById(id);
+    }
     @RequestMapping("/address/update")
     public String address_update(@RequestParam("id")Integer id,@RequestParam("address_content")String address_content){
         address_dao.update(id,address_content);
