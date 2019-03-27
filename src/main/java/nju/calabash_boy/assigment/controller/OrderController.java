@@ -27,8 +27,14 @@ public class OrderController {
     private RestaurantRepository restaurant_dao;
     @Autowired
     private AssociatorRepository associator_dao;
+    @Autowired
+    private AddressRepository address_dao;
     private final static int AUTO_DECLINE_MINUTE = 1;
     private Order check(Order order){
+        int address_id = order.getAddressId();
+        order.setAddressContent(address_dao.getById(address_id).getAddress_content());
+        Associator ass = associator_dao.getById(order.getAssociatorId());
+        order.setAssociator(ass);
         if (order.getState().equals("confirming")){
             LocalDateTime submit_time = order.getSubmitTime();
             LocalDateTime now_time = LocalDateTime.now();
@@ -145,6 +151,10 @@ public class OrderController {
         }
         order.setItem_list(ans);
         return order;
+    }
+    @RequestMapping("/confirm_associator")
+    public void confirm_associator(@RequestParam("order_id")Integer order_id){
+        order_dao.confirm_associator(order_id);
     }
     @RequestMapping("/confirm")
     public void confirm_order(@RequestParam("order_id")Integer order_id){

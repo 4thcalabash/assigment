@@ -28,12 +28,42 @@ public class Order {
     @Column(name = "finish_time")
     private LocalDateTime finishTime;
     private double amount;
+    @Column(name ="address_id")
+    private int addressId;
     @Transient
     private String restaurantName;
     @Transient
     private List<OrderItem> item_list;
     @Transient
     private String associatorName;
+    @Transient
+    private String addressContent;
+    @Transient
+    private Associator associator;
+
+    public Associator getAssociator() {
+        return associator;
+    }
+
+    public void setAssociator(Associator associator) {
+        this.associator = associator;
+    }
+
+    public String getAddressContent() {
+        return addressContent;
+    }
+
+    public void setAddressContent(String addressContent) {
+        this.addressContent = addressContent;
+    }
+
+    public int getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
+    }
 
     public String getAssociatorName() {
         return associatorName;

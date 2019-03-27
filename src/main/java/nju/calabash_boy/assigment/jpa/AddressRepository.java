@@ -16,4 +16,5 @@ public interface AddressRepository extends JpaRepository<Address,Integer> {
     @Query(value = "update address set address_content = ?2 where id = ?1",nativeQuery = true)
     void update(Integer id,String address_content);
     void deleteById(Integer id);
+    Address getById(Integer id);
 }

@@ -23,4 +23,8 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
     @Transactional
     @Query(value = "update `order` set state = \"declined\" where id = ?1 and state = \"confirming\"",nativeQuery = true)
     void decline(Integer id);
+    @Modifying
+    @Transactional
+    @Query(value = "update `order` set state = \"finished\" where id = ?1 and state = \"delivering\"",nativeQuery = true)
+    void confirm_associator(Integer id);
 }

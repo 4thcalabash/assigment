@@ -107,16 +107,18 @@
 					<fieldset>
 						<legend>新地址</legend>
 						<div>
+							<div id = "wrapper" style="height:500px;width:500px;"></div>
 							<div class="form-row">
 								<div class="field-label"><label >名字</label>:</div>
 								<div class="field-widget"><input class="required" title = "地址名字" id = "address_add_name" /></div>
 							</div>
 							<div class="form-row">
 								<div class="field-label"><label >具体地址</label>:</div>
-								<div class="field-widget"><input class="required" title = "具体地址信息" id = "address_add_content"/></div>
+								<div class="field-widget"><input class="required" title = "具体地址信息" id = "address_add_content" /></div>
+								<button id = "search_address">搜索</button>
 							</div>
 						</div>
-					</fieldset>`
+					</fieldset>
 				</form>
 				<button id = "address_submit" >提交</button>
 				<button id = "address_back" >后退</button>
@@ -182,6 +184,7 @@
 				<form id = "item_list">
 
 				</form>
+				<button id = "confirm_order">确认收货</button>
 			</div>
 
 		</div>
@@ -296,8 +299,9 @@
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/jquery.mobile.custom.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
-
+<script type = "text/javascript" src = "https://webapi.amap.com/maps?v=1.4.13&key=58c50b7003d7b30a606ad2cfad9bbcf4"></script>
 	<script type="text/javascript">
+		var geocoder,marker,map;
 		function only_show(id){
 			let list = ["single_order","all_order","information","welcome","address_all","address_adding","all_restaurants","single_restaurant","car"];
 			for (let i = 0;i<list.length;i ++){
@@ -573,6 +577,8 @@
 					                    <br>
 					                    <div class=\"field-label\"><label >时间</label>:</div>
 					                    <div class=\"field-widget\"><input class=\"required\"  value = \"`+order.submitTime+`\" readonly = true/></div>
+					                     <div class=\"field-label\"><label >送餐地址</label>:</div>
+					                    <div class=\"field-widget\"><input class=\"required\"  value = \"`+order.addressContent+`\" readonly = true/></div>
 					                    <br>
 					                    <button id = \"order_detail_`+order.id+`\">查看</button>
 									</div>
@@ -663,7 +669,24 @@
 					for (let i =0;i < data.item_list.length;i++){
 						html_str += make_item(data.item_list[i]);
 					}
+					let order_id = data.id;
 					$("#item_list").html(html_str);
+					if (data.state === 'delivering'){
+						document.getElementById("confirm_order").style.display = "block";
+						$("#confirm_order").click(function (event) {
+							$.ajax({
+								url:"/order/confirm_associator",
+								data:{
+									order_id:order_id
+								},
+								success(data){
+									refresh_single_order(order_id);
+								}
+							})
+						})
+					}else{
+						document.getElementById("confirm_order").style.display = "none";
+					}
 				}
 			})
 		}
@@ -725,8 +748,76 @@
             $("#welcome").html("welcome");
             only_show("welcome");
         })
+		function regeoCode(map,lnglat){
+			console.log(lnglat);
+
+			if (!geocoder){
+				geocoder = new AMap.Geocoder();
+			}
+			if (!marker){
+				marker = new AMap.Marker();
+				map.add(marker);
+			}
+			marker.setPosition(lnglat);
+			geocoder.getAddress(lnglat,function (status, result) {
+				if (status === 'complete' && result.regeocode){
+					let address = result.regeocode.formattedAddress;
+					console.log(address)
+					$("#address_add_content").val(address);
+				}
+			})
+			marker.setMap(map);
+
+		}
+		function onComplete(data){
+			console.log(data);
+			regeoCode(map,data.position);
+		}
 		$("#address_add").click(function(event){
 		    only_show("address_adding");
+			map = new AMap.Map("wrapper");
+			map.plugin("AMap.Geolocation",function () {
+				var geolocation = new AMap.Geolocation({
+					enableHighAccuracy:true,
+					timeout:10000,
+					buttonOffset:new AMap.Pixel(10,20),
+					zoomToAccuracy:true,
+					buttonPosition:"RB",
+					panToLocation:true
+				});
+				AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+				console.log("hererere");
+				map.center = geolocation;
+				map.addControl(geolocation);
+			});
+			AMap.service('AMap.PlaceSearch',function(){
+				let placeSearch= new AMap.PlaceSearch({
+					pageSize: 5,//每页显示多少行
+					pageIndex: 1,//显示的下标从那个开始
+					type:'餐饮服务',//类别，可以以|后面加其他类
+					city: "010", //城市
+					map: map,//显示地图
+					});
+				$("#search_address").click(function (event) {
+					let address = $("#address_add_content").val();
+					console.log(address);
+					placeSearch.search(address,function(status,result){
+						console.log(result);
+					})
+				})
+			});
+			map.plugin("AMap.Geocoder",function () {
+				console.log("here");
+			});
+
+			if (!marker){
+				marker = new AMap.Marker();
+				map.add(marker);
+			}
+			map.on("click",function (e) {
+				let lnglat = e.lnglat;
+				regeoCode(map,lnglat);
+			});
 		})
 		$("#address_show").click(function(event){
 		   refresh_address();
